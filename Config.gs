@@ -4,6 +4,7 @@ var MAILLENS = Object.freeze({
   SENDERS_SHEET: 'Senders',
   DASHBOARD_SHEET: 'Dashboard',
   STATE_KEY: 'maillens.scan.state.v1',
+  SPREADSHEET_ID_KEY: 'maillens.spreadsheet.id.v1',
   TRIGGER_HANDLER: 'continueMailLensScan',
   DEFAULT_QUERY: 'in:anywhere',
   DEFAULT_BATCH_SIZE: 100,

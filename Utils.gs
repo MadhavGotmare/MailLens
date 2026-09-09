@@ -1,6 +1,23 @@
-/** @return {GoogleAppsScript.Spreadsheet.Spreadsheet} */
+/**
+ * Gets the bound report spreadsheet, including when invoked by a time trigger
+ * where Apps Script does not provide an active spreadsheet.
+ * @return {GoogleAppsScript.Spreadsheet.Spreadsheet}
+ */
 function getMailLensSpreadsheet_() {
-  return SpreadsheetApp.getActiveSpreadsheet();
+  var active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) {
+    PropertiesService.getDocumentProperties().setProperty(MAILLENS.SPREADSHEET_ID_KEY, active.getId());
+    return active;
+  }
+  var spreadsheetId = PropertiesService.getDocumentProperties().getProperty(MAILLENS.SPREADSHEET_ID_KEY);
+  if (!spreadsheetId) {
+    throw new Error('MailLens has no report spreadsheet. Start a scan from the bound Google Sheet first.');
+  }
+  return SpreadsheetApp.openById(spreadsheetId);
+}
+
+function showMailLensToast_(message, seconds) {
+  getMailLensSpreadsheet_().toast(message, MAILLENS.MENU_NAME, seconds);
 }
 
 function getOrCreateSheet_(name) {

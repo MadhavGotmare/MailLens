@@ -4,6 +4,8 @@ function startMailLensScan() {
   var response = ui.prompt('MailLens scan', 'Optional Gmail search query:', ui.ButtonSet.OK_CANCEL);
   if (response.getSelectedButton() !== ui.Button.OK) return;
   var query = response.getResponseText().trim() || MAILLENS.DEFAULT_QUERY;
+  // Persist the bound spreadsheet ID before creating a continuation trigger.
+  getMailLensSpreadsheet_();
   resetMailLensScan_(false);
   saveScanState_({ query: query, offset: 0, processedThreads: 0, startedAt: new Date().toISOString() });
   continueMailLensScan();
@@ -33,7 +35,7 @@ function continueMailLensScan() {
       finishMailLensScan_(state);
     } else {
       scheduleContinuation_();
-      SpreadsheetApp.getActive().toast('Processed ' + state.processedThreads + ' threads; scan will continue shortly.', MAILLENS.MENU_NAME, 5);
+      showMailLensToast_('Processed ' + state.processedThreads + ' threads; scan will continue shortly.', 5);
     }
   } finally {
     lock.releaseLock();
@@ -76,7 +78,7 @@ function finishMailLensScan_(state) {
   PropertiesService.getDocumentProperties().deleteProperty(MAILLENS.STATE_KEY);
   generateSendersReport();
   refreshMailLensDashboard();
-  SpreadsheetApp.getActive().toast('Scan complete: ' + state.processedThreads + ' threads processed.', MAILLENS.MENU_NAME, 8);
+  showMailLensToast_('Scan complete: ' + state.processedThreads + ' threads processed.', 8);
 }
 
 function loadScanState_() {
@@ -101,5 +103,5 @@ function resetMailLensScan() {
 function resetMailLensScan_(notify) {
   clearContinuationTriggers_();
   PropertiesService.getDocumentProperties().deleteProperty(MAILLENS.STATE_KEY);
-  if (notify) SpreadsheetApp.getActive().toast('Saved scan progress was cleared.', MAILLENS.MENU_NAME, 5);
+  if (notify) showMailLensToast_('Saved scan progress was cleared.', 5);
 }

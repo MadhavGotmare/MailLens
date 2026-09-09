@@ -22,7 +22,7 @@ MailLens is a Google Apps Script companion for a Google Sheet that scans Gmail i
 
 ## Operation and limits
 
-A batch contains 100 Gmail threads. The current query and thread offset are saved in document properties after each batch, then the next batch is scheduled using a time-based trigger. This limits individual runs and makes long scans resumable. Use **Continue scan now** to advance an existing scan manually, or **Reset scan** to remove its saved progress and continuation trigger.
+A batch contains 100 Gmail threads. The current query, thread offset, and destination spreadsheet ID are saved in document properties after each batch, then the next batch is scheduled using a time-based trigger. This lets trigger-based executions reopen the report spreadsheet even though they do not have an active spreadsheet context. This limits individual runs and makes long scans resumable. Use **Continue scan now** to advance an existing scan manually, or **Reset scan** to remove its saved progress and continuation trigger.
 
 Gmail search ordering can change as new mail arrives. For the most reproducible one-time audit, use a bounded query (for example, `before:2026/01/01`). Sender counts are message counts, not thread counts. Newsletter detection is heuristic: `List-Unsubscribe`, `List-Id`, common newsletter-like subject terms, and unsubscribe text are signals, not guarantees.
 
